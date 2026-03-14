@@ -37,6 +37,7 @@ def analyze_dog_photo(image_bytes: bytes, metadata: dict) -> dict:
     matted_fur = False
     special_handling = False
 
+    dirtiness_level = "clean"
     if image_bytes and api_key:
         classification = vision.classify_dog_from_image(image_bytes, api_key)
         if classification:
@@ -44,12 +45,14 @@ def analyze_dog_photo(image_bytes: bytes, metadata: dict) -> dict:
             long_thick_coat = classification.get("longThickCoat", False)
             matted_fur = classification.get("mattedFur", False)
             special_handling = classification.get("specialHandling", False)
+            dirtiness_level = classification.get("dirtinessLevel", "clean")
 
     result = rules.compute_grooming_price(
         size_band=size_band,
         long_thick_coat=long_thick_coat,
         matted_fur=matted_fur,
         special_handling=special_handling,
+        dirtiness_level=dirtiness_level,
     )
     explanation = rules.build_explanation(
         result["factors"], result["totalPrice"]

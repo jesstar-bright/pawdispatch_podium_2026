@@ -68,7 +68,7 @@ npm run dev
 2. Upload a **real dog photo**
 3. Fill in **pet name**, optionally breed/weight
 4. Click **Get Price Estimate**
-5. You should see a **real Claude Vision** response: size classification and price
+5. You should see a **real Claude Vision** response: AI-estimated price between **$50 and $5000** and an explanation. (If you see exactly $75 every time, the frontend is likely in mock mode — set `NEXT_PUBLIC_MOCK_API=false` in `.env.local` and restart Next.js.)
 
 ---
 
@@ -92,8 +92,9 @@ The Next.js route proxies to the Python agent and returns this shape:
 }
 ```
 
-- All monetary values are **cents** (e.g. 5500 = $55).
-- The Python agent in `src/agents/pricing/server.py` already returns this shape; `route.ts` at `src/app/api/pricing/estimate/route.ts` adds `estimateId` and `imageUrl` for multipart uploads.
+- All monetary values are **cents** (e.g. 5500 = $55). The pricing agent uses Claude Vision to estimate a price in the **$50–$5000** range from the dog photo.
+- The Python agent in `src/agents/pricing/server.py` returns this shape; `route.ts` at `src/app/api/pricing/estimate/route.ts` adds `estimateId` and `imageUrl` for multipart uploads.
+- **Mock mode:** When `NEXT_PUBLIC_MOCK_API=true`, the frontend never calls the agent and always shows a fixed $75 estimate. Use `NEXT_PUBLIC_MOCK_API=false` for real AI pricing.
 
 ---
 

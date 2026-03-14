@@ -42,7 +42,7 @@ cd ../..
 
 ## 3. Start the Python pricing agent (Terminal 1)
 
-From the **repo root**:
+In a **separate terminal**, from the repo root (e.g. `cd /path/to/pawdispatch_podium_2026`):
 
 ```bash
 PYTHONPATH=src uvicorn agents.pricing.server:app --port 8000
@@ -54,7 +54,7 @@ Leave this running.
 
 ## 4. Start Next.js (Terminal 2)
 
-From the **repo root**:
+In **another terminal**, from the **repo root**:
 
 ```bash
 npm run dev
@@ -64,17 +64,17 @@ npm run dev
 
 ## 5. Test it
 
-1. Open **http://localhost:3000/upload**
+1. Go to **http://localhost:3000/upload**
 2. Upload a **real dog photo**
 3. Fill in **pet name**, optionally breed/weight
-4. Click **Get Price Estimate**
-5. You should see a **real Claude Vision** response: size classification and price
+4. Hit **Get Price Estimate**
+5. You should see a **real Claude Vision** response with size classification and price
 
 ---
 
 ## 6. If it works
 
-Push any fixes to `main`. If the frontend shows wrong data or errors, check that the API response shape matches what the frontend expects.
+Push any fixes to `main`. If the API response shape doesn't match what the frontend expects, use the format below.
 
 ### Expected response from `POST /api/pricing/estimate`
 

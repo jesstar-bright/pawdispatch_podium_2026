@@ -9,10 +9,10 @@ import { eq } from "drizzle-orm";
  */
 export async function GET(
   request: Request,
-  { params }: { params: { estimateId: string } }
+  { params }: { params: Promise<{ estimateId: string }> }
 ) {
   try {
-    const estimateId = params.estimateId;
+    const { estimateId } = await params;
 
     const estimate = await db
       .select()

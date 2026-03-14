@@ -9,10 +9,10 @@ import { eq } from "drizzle-orm";
  */
 export async function GET(
   request: Request,
-  { params }: { params: { appointmentId: string } }
+  { params }: { params: Promise<{ appointmentId: string }> }
 ) {
   try {
-    const appointmentId = params.appointmentId;
+    const { appointmentId } = await params;
 
     // Get appointment with joins
     const appointment = await db

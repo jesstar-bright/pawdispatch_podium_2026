@@ -1,5 +1,7 @@
 """
 Claude Vision: classify dog from image for grooming pricing.
+Uses ANTHROPIC_API_KEY from environment (e.g. secrets/.env).
+Features returned are used by rules.py: sizeCategory (base price), longThickCoat, mattedFur, specialHandling (add-ons).
 """
 
 import base64

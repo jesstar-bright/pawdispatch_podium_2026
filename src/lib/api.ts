@@ -1,3 +1,4 @@
+/** When true, pricing returns a fixed mock ($75). Set false to use the real pricing agent (Claude image → $50–$5000). */
 const MOCK = process.env.NEXT_PUBLIC_MOCK_API === "true";
 
 export interface PricingEstimate {
@@ -27,6 +28,7 @@ export interface AppointmentConfirmation {
   confirmationNumber: string;
 }
 
+/** Fixed mock used when NEXT_PUBLIC_MOCK_API=true. For real AI pricing ($50–$5000), set NEXT_PUBLIC_MOCK_API=false and run the Python pricing agent. */
 const MOCK_ESTIMATE: PricingEstimate = {
   estimateId: "est-mock-001",
   basePrice: 5500,

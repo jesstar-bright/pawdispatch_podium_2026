@@ -1,40 +1,35 @@
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
 
-const FEATURES: Record<string, string> = {
-  track: "Live Tracking",
-  appointments: "My Appointments",
+const AGENT_NAMES: Record<string, string> = {
+  tracking: "Live Tracking",
   sdr: "SDR Console",
-  analytics: "Analytics",
-  booking: "Booking & time slots",
+  analytics: "Analytics Dashboard",
+  retention: "Retention & Surveys",
+  marketing: "AI Marketing",
 };
 
-export default async function ComingSoonPage({
+export default async function ComingSoon({
   searchParams,
 }: {
-  searchParams: Promise<{ feature?: string }>;
+  searchParams: Promise<{ agent?: string }>;
 }) {
-  const resolved = await searchParams;
-  const featureKey = resolved.feature ?? "";
-  const featureName = FEATURES[featureKey] ?? "This feature";
+  const { agent } = await searchParams;
+  const agentName = agent ? AGENT_NAMES[agent] || agent : "This Feature";
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <Navbar />
-      <main className="mx-auto max-w-md px-4 py-24 text-center">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-          Coming soon
-        </h1>
-        <p className="mt-4 text-zinc-600 dark:text-zinc-400">
-          {featureName} is not available yet. We’re working on it!
-        </p>
-        <Link
-          href="/"
-          className="mt-8 inline-block rounded-full bg-zinc-900 px-6 py-3 font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
-        >
-          Back to home
-        </Link>
-      </main>
+    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+      <div className="text-6xl mb-6">🚧</div>
+      <h1 className="text-3xl font-bold text-zinc-900">{agentName}</h1>
+      <p className="mt-4 max-w-md text-lg text-zinc-600">
+        This agent is coming soon! We&apos;re building autonomous AI agents to handle
+        every part of your pet grooming business.
+      </p>
+      <Link
+        href="/"
+        className="mt-8 rounded-full bg-paw-blue px-6 py-2.5 font-semibold text-white transition-colors hover:bg-paw-blue-dark"
+      >
+        Back to Home
+      </Link>
     </div>
   );
 }

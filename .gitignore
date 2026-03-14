@@ -40,6 +40,11 @@ yarn-error.log*
 # uploads (lead-to-booking spec: local image storage)
 /public/uploads
 
+# database
+/data
+*.db
+*.db-journal
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

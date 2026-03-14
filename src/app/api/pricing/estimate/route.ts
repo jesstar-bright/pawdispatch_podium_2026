@@ -1,13 +1,15 @@
 /**
  * POST /api/pricing/estimate
- * Proxies to the Python pricing agent (src/agents/pricing).
- * Requires PRICING_AGENT_PYTHON_URL. Multipart or JSON body.
+ * Creates a pricing estimate and saves to database.
+ * Can use Sam's AI module or fallback to Python pricing agent.
  */
 
 import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import { db } from "@/lib/db";
+import { pricing_estimates } from "@/lib/db/schema";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 const PRICING_AGENT_PYTHON_URL = process.env.PRICING_AGENT_PYTHON_URL;
@@ -105,6 +107,24 @@ export async function POST(request: Request) {
 
       const data = (await res.json()) as Record<string, unknown>;
       const imageUrl = await saveUploadedImage(estimateId, imageBuffer);
+
+      // Save to database
+      try {
+        await db.insert(pricing_estimates).values({
+          id: estimateId,
+          pet_id: null, // Will be set at booking time
+          base_price: Number(data.basePrice),
+          adjustments: JSON.stringify(data.adjustments ?? []),
+          total_price: Number(data.totalPrice),
+          size_category: String(data.sizeCategory),
+          explanation: String(data.explanation),
+          image_url: imageUrl,
+        });
+      } catch (dbError) {
+        console.error("[pricing/estimate] Database error:", dbError);
+        // Continue anyway - return the response even if DB save fails
+      }
+
       return NextResponse.json(
         toSpecResponse(
           {

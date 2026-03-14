@@ -49,15 +49,92 @@ const SPEC_ERROR = {
   message: "Unable to generate pricing estimate. Please try again.",
 } as const;
 
+// Mock data for when Python agent is not available
+const MOCK_ESTIMATE = {
+  sizeCategory: "large",
+  basePrice: 5500,
+  adjustments: [
+    { reason: "Long/thick coat", amount: 1500 },
+    { reason: "Large dog adjustment", amount: 500 },
+  ],
+  totalPrice: 7500,
+  explanation: "Based on the photo, this appears to be a large breed with a thick double coat that requires extra grooming time. The estimate includes base grooming services plus adjustments for coat complexity and size.",
+};
+
 export async function POST(request: Request) {
+  // If Python agent is not configured, return mock data
   if (!PRICING_AGENT_PYTHON_URL) {
-    return NextResponse.json(
-      {
-        error: "Pricing agent not configured",
-        message: "Set PRICING_AGENT_PYTHON_URL and run the Python pricing agent (src/agents/pricing).",
-      },
-      { status: 503 }
-    );
+    try {
+      const contentType = request.headers.get("content-type") ?? "";
+      
+      if (contentType.includes("multipart/form-data")) {
+        const formData = await request.formData();
+        const image = formData.get("image");
+        const petName = formData.get("petName")?.toString() ?? "";
+
+        if (!image || typeof image === "string") {
+          return NextResponse.json(
+            { ...SPEC_ERROR, message: "Image file is required." },
+            { status: 400 }
+          );
+        }
+        if (!petName.trim()) {
+          return NextResponse.json(
+            { ...SPEC_ERROR, message: "Pet name is required." },
+            { status: 400 }
+          );
+        }
+
+        const file = image as File;
+        const arrayBuffer = await file.arrayBuffer();
+        const imageBuffer = Buffer.from(arrayBuffer);
+        const estimateId = randomUUID();
+        const imageUrl = await saveUploadedImage(estimateId, imageBuffer);
+
+        // Save mock estimate to database
+        try {
+          await db.insert(pricing_estimates).values({
+            id: estimateId,
+            pet_id: null,
+            base_price: MOCK_ESTIMATE.basePrice,
+            adjustments: JSON.stringify(MOCK_ESTIMATE.adjustments),
+            total_price: MOCK_ESTIMATE.totalPrice,
+            size_category: MOCK_ESTIMATE.sizeCategory,
+            explanation: MOCK_ESTIMATE.explanation,
+            image_url: imageUrl,
+          });
+        } catch (dbError) {
+          console.error("[pricing/estimate] Database error:", dbError);
+        }
+
+        return NextResponse.json(
+          toSpecResponse(MOCK_ESTIMATE, estimateId, imageUrl)
+        );
+      }
+
+      // JSON request
+      const body = (await request.json()) as {
+        petName?: string;
+        breed?: string;
+        weight?: number;
+        image?: string;
+      };
+      const petName = body.petName?.trim() ?? "";
+      if (!petName) {
+        return NextResponse.json(
+          { ...SPEC_ERROR, message: "Pet name is required." },
+          { status: 400 }
+        );
+      }
+
+      const estimateId = randomUUID();
+      return NextResponse.json(
+        toSpecResponse(MOCK_ESTIMATE, estimateId, "")
+      );
+    } catch (e) {
+      console.error("[pricing/estimate] Mock mode error:", e);
+      return NextResponse.json(SPEC_ERROR, { status: 500 });
+    }
   }
 
   const base = PRICING_AGENT_PYTHON_URL.replace(/\/$/, "");

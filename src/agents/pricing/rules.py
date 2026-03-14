@@ -14,21 +14,30 @@ from typing import Literal
 
 SizeBand = Literal["small", "medium", "large", "xlarge"]
 
-MIN_PRICE_CENTS = 5000   # $50
-MAX_PRICE_CENTS = 100000 # $1000
+# Pricing rules
+# Base price (weight + dirtiness) should range from $60 to $150
+# Other services should range from $30 to $80
+MIN_PRICE_CENTS = 6000   # $60 (minimum base)
+MAX_PRICE_CENTS = 100000 # $1000 (maximum total)
 
-# Base price by size (small < ~15 lbs, medium ~15–40, large ~40–80, xlarge 80+)
+# Base prices by size (weight-based)
 GROOMING_BASE_PRICE_CENTS: dict[SizeBand, int] = {
-    "small": 5000,   # $50
-    "medium": 10000, # $100
-    "large": 22000,  # $220
-    "xlarge": 45000, # $450
+    "small": 6000,   # $60
+    "medium": 7500,  # $75
+    "large": 9000,   # $90
+    "xlarge": 10500, # $105
 }
 
-# Add-ons from vision (complexity / condition)
-LONG_THICK_COAT_CENTS = 18000   # $180 — more time, more product
-MATTED_FUR_CENTS = 22000        # $220 — dematting labor
-SPECIAL_HANDLING_CENTS = 10000  # $100 — anxious, nervous, extra care
+# Dirtiness adjustments (part of base price calculation)
+# These adjust the base price to stay within $60-$150 range
+SLIGHTLY_DIRTY_CENTS = 1000    # $10
+MODERATELY_DIRTY_CENTS = 2500   # $25
+VERY_DIRTY_CENTS = 4500         # $45
+
+# Other services (range $30-$80)
+LONG_THICK_COAT_CENTS = 5000    # $50
+MATTED_FUR_CENTS = 6000          # $60
+SPECIAL_HANDLING_CENTS = 4000   # $40
 
 
 def size_band_from_weight_lbs(weight_lbs: float | None) -> SizeBand:
@@ -43,17 +52,44 @@ def size_band_from_weight_lbs(weight_lbs: float | None) -> SizeBand:
     return "xlarge"
 
 
+DirtinessLevel = Literal["clean", "slightly_dirty", "moderately_dirty", "very_dirty"]
+
+
 def compute_grooming_price(
     *,
     size_band: SizeBand,
     long_thick_coat: bool = False,
     matted_fur: bool = False,
     special_handling: bool = False,
+    dirtiness_level: DirtinessLevel = "clean",
 ) -> dict:
-    base_price = GROOMING_BASE_PRICE_CENTS[size_band]
+    # Start with base price by size (weight-based)
+    size_base_price = GROOMING_BASE_PRICE_CENTS[size_band]
     adjustments: list[dict] = []
+    
+    # Add dirtiness adjustment (base + dirtiness = $60-$150 range)
+    dirtiness_adjustment = 0
+    if dirtiness_level == "slightly_dirty":
+        dirtiness_adjustment = SLIGHTLY_DIRTY_CENTS
+        adjustments.append({"reason": "Slightly dirty (extra cleaning time)", "amount": SLIGHTLY_DIRTY_CENTS})
+    elif dirtiness_level == "moderately_dirty":
+        dirtiness_adjustment = MODERATELY_DIRTY_CENTS
+        adjustments.append({"reason": "Moderately dirty (extensive cleaning required)", "amount": MODERATELY_DIRTY_CENTS})
+    elif dirtiness_level == "very_dirty":
+        dirtiness_adjustment = VERY_DIRTY_CENTS
+        adjustments.append({"reason": "Very dirty (deep cleaning and deodorizing)", "amount": VERY_DIRTY_CENTS})
+    
+    # Base price = size + dirtiness (should be $60-$150)
+    base_price = size_base_price + dirtiness_adjustment
+    
+    # Ensure base price stays within $60-$150 range
+    BASE_MAX_CENTS = 15000  # $150
+    base_price = max(MIN_PRICE_CENTS, min(BASE_MAX_CENTS, base_price))
+    
+    # Calculate total starting from base price (size + dirtiness)
     total_price = base_price
 
+    # Add other services (range $30-$80 each)
     if long_thick_coat:
         total_price += LONG_THICK_COAT_CENTS
         adjustments.append({"reason": "Long/thick coat", "amount": LONG_THICK_COAT_CENTS})
@@ -67,11 +103,16 @@ def compute_grooming_price(
             "amount": SPECIAL_HANDLING_CENTS,
         })
 
+    # Clamp total price to maximum
     total_price = max(MIN_PRICE_CENTS, min(MAX_PRICE_CENTS, total_price))
 
-    factors = [{"label": f"Base ({size_band})", "amountCents": base_price}]
+    # Build factors - base price includes size + dirtiness
+    dirtiness_text = f", {dirtiness_level.replace('_', ' ')}" if dirtiness_level != "clean" else ""
+    factors = [{"label": f"Base ({size_band}{dirtiness_text})", "amountCents": base_price}]
     for a in adjustments:
-        factors.append({"label": a["reason"], "amountCents": a["amount"]})
+        # Only include other services in factors (dirtiness is already in base)
+        if "dirty" not in a["reason"]:
+            factors.append({"label": a["reason"], "amountCents": a["amount"]})
 
     return {
         "basePrice": base_price,

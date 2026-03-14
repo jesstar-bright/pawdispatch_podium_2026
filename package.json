@@ -10,6 +10,7 @@
     "db:seed": "node -e \"require('./src/lib/db/seed').seedDatabase().then(() => process.exit(0)).catch(e => { console.error(e); process.exit(1); })\""
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
     "better-sqlite3": "^12.8.0",
     "drizzle-orm": "^0.29.0",
     "lucide-react": "^0.577.0",

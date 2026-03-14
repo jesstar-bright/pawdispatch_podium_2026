@@ -1,5 +1,7 @@
 """
-Pricing engine: image + metadata -> Claude Vision (optional) -> rules -> estimate.
+Pricing engine: image + metadata -> Claude Vision (optional) -> estimate.
+When image + ANTHROPIC_API_KEY present: Claude returns a price in $50-$5000.
+Otherwise: fall back to rule-based pricing from weight/classification.
 """
 
 import os
@@ -14,6 +16,21 @@ def analyze_dog_photo(image_bytes: bytes, metadata: dict) -> dict:
     Returns: { sizeCategory, basePrice, adjustments, totalPrice, explanation }
     """
     api_key = os.environ.get("ANTHROPIC_API_KEY")
+
+    # Prefer AI price from image ($50-$5000) when we have image + API key
+    if image_bytes and api_key:
+        ai_price = vision.estimate_price_from_image(image_bytes, api_key)
+        if ai_price:
+            total = ai_price["estimatedPriceCents"]
+            return {
+                "sizeCategory": ai_price["sizeCategory"],
+                "basePrice": total,
+                "adjustments": [],
+                "totalPrice": total,
+                "explanation": ai_price["explanation"],
+            }
+
+    # Fallback: rule-based from weight or classifier
     weight = metadata.get("weight")
     size_band = rules.size_band_from_weight_lbs(weight)
     long_thick_coat = False

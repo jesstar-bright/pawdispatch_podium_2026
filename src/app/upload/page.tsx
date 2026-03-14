@@ -18,7 +18,6 @@ export default function UploadPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file || !petName) return;
-
     setLoading(true);
     setError("");
     try {
@@ -28,7 +27,6 @@ export default function UploadPage() {
       formData.append("serviceType", "grooming");
       if (breed) formData.append("breed", breed);
       if (weight) formData.append("weight", weight);
-
       const estimate = await submitPricingEstimate(formData);
       sessionStorage.setItem(`estimate-${estimate.estimateId}`, JSON.stringify(estimate));
       router.push(`/pricing/${estimate.estimateId}`);
@@ -48,12 +46,16 @@ export default function UploadPage() {
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-8">
         <div>
-          <h2 className="mb-3 text-lg font-semibold" style={{ color: "#e2e8f0" }}>Photo</h2>
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-wider" style={{ color: "rgba(148,163,184,0.6)" }}>
+            Photo
+          </h2>
           <PhotoUpload onFileSelect={setFile} />
         </div>
 
         <div>
-          <h2 className="mb-3 text-lg font-semibold" style={{ color: "#e2e8f0" }}>Pet Details</h2>
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-wider" style={{ color: "rgba(148,163,184,0.6)" }}>
+            Pet Details
+          </h2>
           <PetDetailsForm
             petName={petName}
             breed={breed}
@@ -65,7 +67,9 @@ export default function UploadPage() {
         </div>
 
         <div>
-          <h2 className="mb-3 text-lg font-semibold" style={{ color: "#e2e8f0" }}>Service</h2>
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-wider" style={{ color: "rgba(148,163,184,0.6)" }}>
+            Service
+          </h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div
               className="rounded-lg p-3 text-center text-sm font-medium"
@@ -73,38 +77,45 @@ export default function UploadPage() {
             >
               Grooming
             </div>
-            <div
-              className="rounded-lg p-3 text-center text-sm"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b" }}
-            >
-              Walking <span className="block text-xs">Coming Soon</span>
-            </div>
-            <div
-              className="rounded-lg p-3 text-center text-sm"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b" }}
-            >
-              Boarding <span className="block text-xs">Coming Soon</span>
-            </div>
-            <div
-              className="rounded-lg p-3 text-center text-sm"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b" }}
-            >
-              Daycare <span className="block text-xs">Coming Soon</span>
-            </div>
+            {["Walking", "Boarding", "Daycare"].map((svc) => (
+              <div
+                key={svc}
+                className="rounded-lg p-3 text-center text-sm"
+                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b" }}
+              >
+                {svc}
+                <span className="block text-xs mt-0.5">Coming Soon</span>
+              </div>
+            ))}
           </div>
         </div>
 
         {error && (
-          <p className="rounded-lg p-3 text-sm" style={{ background: "rgba(220,38,38,0.15)", border: "1px solid rgba(220,38,38,0.3)", color: "#fca5a5" }}>{error}</p>
+          <p
+            className="rounded-lg p-3 text-sm"
+            style={{ background: "rgba(220,38,38,0.15)", border: "1px solid rgba(220,38,38,0.3)", color: "#fca5a5" }}
+          >
+            {error}
+          </p>
         )}
 
         <button
           type="submit"
           disabled={!file || !petName || loading}
-          className="w-full rounded-full py-3 text-lg font-semibold text-white transition-all disabled:cursor-not-allowed disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", boxShadow: "0 0 24px rgba(37,99,235,0.3)" }}
+          className="w-full btn-cta py-3.5 text-lg"
         >
-          {loading ? "Analyzing with AI..." : "Get Price Estimate"}
+          {loading ? (
+            <span className="inline-flex items-center gap-2">
+              {/* Spinner */}
+              <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3V4a10 10 0 100 10h-2a8 8 0 01-8-8z" />
+              </svg>
+              Analyzing with AI...
+            </span>
+          ) : (
+            "Get Price Estimate"
+          )}
         </button>
       </form>
     </div>

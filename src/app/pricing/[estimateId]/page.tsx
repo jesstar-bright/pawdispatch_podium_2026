@@ -6,6 +6,26 @@ import Link from "next/link";
 import PricingCard from "@/components/PricingCard";
 import type { PricingEstimate } from "@/lib/api";
 
+function ArrowRightIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+    >
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  );
+}
+
 export default function PricingPage() {
   const params = useParams();
   const router = useRouter();
@@ -24,15 +44,15 @@ export default function PricingPage() {
   if (!estimate) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p style={{ color: "#64748b" }}>Loading estimate...</p>
+        <p className="text-muted-foreground">Loading estimate...</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="text-3xl font-bold" style={{ color: "#f1f5f9" }}>Your Price Estimate</h1>
-      <p className="mt-2" style={{ color: "#94a3b8" }}>
+      <h1 className="text-3xl font-bold text-foreground">Your Price Estimate</h1>
+      <p className="mt-2 text-muted-foreground">
         Here&apos;s what grooming will cost based on our AI analysis of your dog&apos;s photo.
       </p>
 
@@ -43,15 +63,13 @@ export default function PricingPage() {
       <div className="mt-8 flex gap-4">
         <Link
           href={`/booking/${estimateId}`}
-          className="flex-1 rounded-full py-3 text-center text-lg font-semibold text-white transition-all"
-          style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", boxShadow: "0 0 24px rgba(37,99,235,0.3)" }}
+          className="flex-1 btn-cta py-3.5 text-center text-lg inline-flex items-center justify-center gap-2"
         >
-          Book Now
+          Book Now <ArrowRightIcon />
         </Link>
         <Link
           href="/upload"
-          className="flex-1 rounded-full py-3 text-center text-lg font-semibold transition-colors"
-          style={{ border: "1px solid rgba(255,255,255,0.15)", color: "#cbd5e1" }}
+          className="flex-1 btn-ghost py-3.5 text-center text-lg"
         >
           Try Another Photo
         </Link>

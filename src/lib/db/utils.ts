@@ -25,14 +25,14 @@ export function validateDate(dateString: string): {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const maxDate = new Date(today);
-  maxDate.setDate(maxDate.getDate() + 3);
+  maxDate.setDate(maxDate.getDate() + 14);
 
   if (date < today) {
     return { valid: false, error: "Date cannot be in the past" };
   }
 
   if (date > maxDate) {
-    return { valid: false, error: "Date must be within 3 days from today" };
+    return { valid: false, error: "Date must be within 2 weeks from today" };
   }
 
   return { valid: true };

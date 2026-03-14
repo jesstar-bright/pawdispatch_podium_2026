@@ -1,55 +1,32 @@
 import { MARKETING_DATA } from "@/lib/dashboard-data";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
-const card = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: 16,
+const CAMPAIGN_STATUS_COLORS: Record<string, { bg: string; color: string }> = {
+  Active: { bg: "rgba(52,211,153,0.15)", color: "#34d399" },
+  Proposed: { bg: "rgba(245,158,11,0.15)", color: "#f59e0b" },
+  Draft: { bg: "rgba(100,116,139,0.18)", color: "#94a3b8" },
 };
-
-function StatusPill({ status }: { status: string }) {
-  const styles: Record<string, { background: string; color: string }> = {
-    Proposed: { background: "rgba(245,158,11,0.15)", color: "#f59e0b" },
-    Active: { background: "rgba(52,211,153,0.15)", color: "#34d399" },
-    Draft: { background: "rgba(100,116,139,0.18)", color: "#94a3b8" },
-  };
-  const s = styles[status] ?? styles.Draft;
-  return (
-    <span
-      className="text-xs font-semibold px-2.5 py-0.5 rounded-full"
-      style={s}
-    >
-      {status}
-    </span>
-  );
-}
-
-function ResultBadge({ result }: { result: string }) {
-  const isPending = result.toLowerCase().includes("pending");
-  const color = isPending ? "#f59e0b" : "#34d399";
-  const bg = isPending ? "rgba(245,158,11,0.12)" : "rgba(52,211,153,0.12)";
-  return (
-    <span
-      className="text-xs font-semibold px-2 py-0.5 rounded"
-      style={{ background: bg, color }}
-    >
-      {result}
-    </span>
-  );
-}
 
 export default function MarketingPage() {
   const { websiteMetrics, seoPerformance, recentActions, campaignIdeas } = MARKETING_DATA;
 
+  const webMetrics = [
+    { label: "Visitors Today", value: websiteMetrics.visitorsToday.toString(), color: "#38bdf8" },
+    { label: "Conversion Rate", value: websiteMetrics.conversionRate, color: "#34d399" },
+    { label: "Top Landing Page", value: websiteMetrics.topLandingPage, color: "#818cf8", small: true },
+    { label: "Bounce Rate", value: websiteMetrics.bounceRate, color: "#f59e0b" },
+  ];
+
   return (
-    <div style={{ color: "#f1f5f9" }}>
+    <div>
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold mb-1" style={{ color: "#f1f5f9" }}>
+          <h1 className="text-2xl font-extrabold" style={{ color: "#f1f5f9" }}>
             AI Marketing Agent
           </h1>
-          <p style={{ color: "#94a3b8" }}>
-            Autonomous SEO, content, and campaign management
+          <p className="text-sm mt-1" style={{ color: "rgba(148,163,184,0.5)" }}>
+            SEO, campaigns, and content optimization.
           </p>
         </div>
         {/* Gemini Badge */}
@@ -61,41 +38,42 @@ export default function MarketingPage() {
             color: "#c4b5fd",
           }}
         >
-          <span style={{ fontSize: 16 }}>✨</span>
+          <span>✨</span>
           <span>Powered by Google Gemini</span>
         </div>
       </div>
 
-      {/* Website Metrics Row */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        {[
-          { label: "Visitors Today", value: websiteMetrics.visitorsToday.toString(), accent: "#38bdf8" },
-          { label: "Conversion Rate", value: websiteMetrics.conversionRate, accent: "#34d399" },
-          { label: "Top Landing Page", value: websiteMetrics.topLandingPage, accent: "#818cf8", small: true },
-          { label: "Bounce Rate", value: websiteMetrics.bounceRate, accent: "#f59e0b" },
-        ].map((metric) => (
-          <div key={metric.label} style={{ ...card, padding: "20px 24px" }}>
-            <p className="text-xs font-medium uppercase tracking-wide mb-2" style={{ color: "#64748b" }}>
-              {metric.label}
+      {/* Website Metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {webMetrics.map((m) => (
+          <div key={m.label} className="glass-card p-5">
+            <p
+              className="text-xs font-semibold uppercase tracking-wider"
+              style={{ color: "rgba(148,163,184,0.5)" }}
+            >
+              {m.label}
             </p>
             <p
-              className={`font-bold ${metric.small ? "text-lg" : "text-3xl"}`}
-              style={{ color: metric.accent }}
+              className={`font-extrabold mt-1 ${m.small ? "text-lg" : "text-2xl"}`}
+              style={{ color: m.color }}
             >
-              {metric.value}
+              {m.value}
             </p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-6">
-        {/* SEO Performance Table */}
-        <div style={{ ...card, padding: "24px" }}>
-          <h2 className="text-sm font-semibold uppercase tracking-wide mb-5" style={{ color: "#64748b" }}>
+      {/* SEO + Recent Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        {/* SEO Performance */}
+        <div className="glass-card p-6">
+          <h2
+            className="text-sm font-bold uppercase tracking-wider mb-5"
+            style={{ color: "rgba(100,116,139,0.8)" }}
+          >
             SEO Performance
           </h2>
           <div className="space-y-1">
-            {/* Table header */}
             <div
               className="grid text-xs font-semibold uppercase tracking-wide pb-2"
               style={{
@@ -112,12 +90,12 @@ export default function MarketingPage() {
             {seoPerformance.map((row) => {
               const isTop = row.rank === 1;
               const changeNum = parseInt(row.change);
-              const isPositive = !isNaN(changeNum) && changeNum > 0;
               const isNew = row.change === "new";
+              const isPositive = !isNaN(changeNum) && changeNum > 0;
               return (
                 <div
                   key={row.keyword}
-                  className="grid items-center py-2.5"
+                  className="grid items-center"
                   style={{
                     gridTemplateColumns: "1fr 48px 64px 72px",
                     borderBottom: "1px solid rgba(255,255,255,0.04)",
@@ -137,12 +115,18 @@ export default function MarketingPage() {
                     #{row.rank}
                   </span>
                   <span
-                    className="text-xs font-semibold text-center"
+                    className="text-xs font-semibold text-center inline-flex items-center justify-center gap-0.5"
                     style={{
                       color: isNew ? "#818cf8" : isPositive ? "#34d399" : "#f472b6",
                     }}
                   >
-                    {isNew ? "NEW" : isPositive ? `▲ +${changeNum}` : `▼ ${row.change}`}
+                    {isNew ? (
+                      "NEW"
+                    ) : isPositive ? (
+                      <><ArrowUp className="h-3 w-3" />+{changeNum}</>
+                    ) : (
+                      <><ArrowDown className="h-3 w-3" />{row.change}</>
+                    )}
                   </span>
                   <span className="text-sm text-right" style={{ color: "#94a3b8" }}>
                     {row.traffic.toLocaleString()}
@@ -154,83 +138,115 @@ export default function MarketingPage() {
         </div>
 
         {/* Recent Agent Actions */}
-        <div style={{ ...card, padding: "24px" }}>
-          <h2 className="text-sm font-semibold uppercase tracking-wide mb-5" style={{ color: "#64748b" }}>
+        <div className="glass-card p-6">
+          <h2
+            className="text-sm font-bold uppercase tracking-wider mb-5"
+            style={{ color: "rgba(100,116,139,0.8)" }}
+          >
             Recent Agent Actions
           </h2>
           <div className="space-y-3">
-            {recentActions.map((item, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-3 pb-3"
-                style={{ borderBottom: i < recentActions.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none" }}
-              >
+            {recentActions.map((item, i) => {
+              const isPending = item.result.toLowerCase().includes("pending");
+              const resultColor = isPending ? "#f59e0b" : "#34d399";
+              const resultBg = isPending ? "rgba(245,158,11,0.12)" : "rgba(52,211,153,0.12)";
+              return (
                 <div
-                  className="flex-shrink-0 mt-0.5"
+                  key={i}
+                  className="flex items-start gap-3 pb-3"
                   style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: "#818cf8",
-                    marginTop: 6,
+                    borderBottom:
+                      i < recentActions.length - 1
+                        ? "1px solid rgba(255,255,255,0.05)"
+                        : "none",
                   }}
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm leading-snug mb-1.5" style={{ color: "#f1f5f9" }}>
-                    {item.action}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <ResultBadge result={item.result} />
-                    <span className="text-xs" style={{ color: "#64748b" }}>
-                      {item.time}
-                    </span>
+                >
+                  <div
+                    className="flex-shrink-0"
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: "#818cf8",
+                      marginTop: 6,
+                    }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm leading-snug mb-1.5" style={{ color: "#f1f5f9" }}>
+                      {item.action}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="text-xs font-semibold px-2 py-0.5 rounded"
+                        style={{ background: resultBg, color: resultColor }}
+                      >
+                        {item.result}
+                      </span>
+                      <span className="text-xs" style={{ color: "#64748b" }}>
+                        {item.time}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Campaign Ideas */}
-      <div style={{ ...card, padding: "24px" }}>
+      <div className="glass-card p-6">
         <div className="flex items-center gap-3 mb-5">
-          <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: "#64748b" }}>
+          <h2
+            className="text-sm font-bold uppercase tracking-wider"
+            style={{ color: "rgba(100,116,139,0.8)" }}
+          >
             Campaign Ideas
           </h2>
-          <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "rgba(129,140,248,0.15)", color: "#818cf8" }}>
+          <span
+            className="text-xs px-2 py-0.5 rounded-full font-medium"
+            style={{ background: "rgba(129,140,248,0.15)", color: "#818cf8" }}
+          >
             ✨ Gemini-generated
           </span>
         </div>
-        <div className="grid grid-cols-3 gap-4">
-          {campaignIdeas.map((campaign) => (
-            <div
-              key={campaign.name}
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                borderRadius: 12,
-                padding: "18px 20px",
-              }}
-            >
-              <div className="flex items-start justify-between mb-3 gap-2">
-                <h3 className="text-sm font-semibold leading-snug" style={{ color: "#f1f5f9" }}>
-                  {campaign.name}
-                </h3>
-                <StatusPill status={campaign.status} />
-              </div>
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs" style={{ color: "#64748b" }}>Segment:</span>
-                  <span className="text-xs font-medium" style={{ color: "#94a3b8" }}>{campaign.segment}</span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {campaignIdeas.map((c) => {
+            const s = CAMPAIGN_STATUS_COLORS[c.status] ?? CAMPAIGN_STATUS_COLORS.Draft;
+            return (
+              <div
+                key={c.name}
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  borderRadius: 12,
+                  padding: "18px 20px",
+                }}
+              >
+                <div className="flex items-start justify-between mb-3 gap-2">
+                  <h3 className="text-sm font-semibold leading-snug" style={{ color: "#f1f5f9" }}>
+                    {c.name}
+                  </h3>
+                  <span
+                    className="text-xs font-semibold px-2.5 py-0.5 rounded-full flex-shrink-0"
+                    style={s}
+                  >
+                    {c.status}
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs" style={{ color: "#64748b" }}>Channel:</span>
-                  <span className="text-xs font-medium" style={{ color: "#94a3b8" }}>{campaign.channel}</span>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs" style={{ color: "#64748b" }}>Segment:</span>
+                    <span className="text-xs font-medium" style={{ color: "#94a3b8" }}>{c.segment}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs" style={{ color: "#64748b" }}>Channel:</span>
+                    <span className="text-xs font-medium" style={{ color: "#94a3b8" }}>{c.channel}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

@@ -24,11 +24,7 @@ export default async function ComingSoon({
         This agent is coming soon! We&apos;re building autonomous AI agents to handle
         every part of your pet grooming business.
       </p>
-      <Link
-        href="/"
-        className="mt-8 rounded-full px-6 py-2.5 font-semibold text-white transition-all"
-        style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", boxShadow: "0 0 24px rgba(37,99,235,0.3)" }}
-      >
+      <Link href="/" className="mt-8 btn-cta px-6 py-2.5 text-base">
         Back to Home
       </Link>
     </div>

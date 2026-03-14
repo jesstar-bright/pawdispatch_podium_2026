@@ -24,29 +24,25 @@ export default function ConfirmationPage() {
   if (!confirmation) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p style={{ color: "#64748b" }}>Loading confirmation...</p>
+        <p className="text-muted-foreground">Loading confirmation...</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <div className="mt-4">
-        <ConfirmationDetails confirmation={confirmation} />
-      </div>
+      <ConfirmationDetails confirmation={confirmation} />
 
       <div className="mt-8 flex gap-4">
         <Link
           href="/coming-soon?agent=tracking"
-          className="flex-1 rounded-full py-3 text-center font-semibold transition-colors"
-          style={{ border: "1px solid rgba(255,255,255,0.15)", color: "#cbd5e1" }}
+          className="flex-1 btn-ghost py-3.5 text-center text-lg"
         >
           Track Appointment
         </Link>
         <Link
           href="/upload"
-          className="flex-1 rounded-full py-3 text-center font-semibold text-white transition-all"
-          style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", boxShadow: "0 0 24px rgba(37,99,235,0.3)" }}
+          className="flex-1 btn-cta py-3.5 text-center text-lg"
         >
           Book Another
         </Link>

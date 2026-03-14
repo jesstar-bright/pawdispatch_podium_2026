@@ -106,7 +106,11 @@ export async function POST(request: Request) {
     }
 
     // Generate time slots for the requested date
-    const requestedDate = new Date(preferredDate);
+    // Parse date string manually to avoid timezone issues
+    // preferredDate is in format "YYYY-MM-DD"
+    const [year, month, day] = preferredDate.split("-").map(Number);
+    // Create date in local timezone (month is 0-indexed in Date constructor)
+    const requestedDate = new Date(year, month - 1, day);
     const allSlots = generateTimeSlots(requestedDate, availableGroomers);
 
     // Get existing appointments for this date to exclude booked slots

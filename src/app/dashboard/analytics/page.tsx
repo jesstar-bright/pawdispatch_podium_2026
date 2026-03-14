@@ -1,10 +1,20 @@
-import { REVENUE_DATA } from "@/lib/dashboard-data";
+import {
+  getWeeklyRevenue,
+  getMarketStats,
+  getGroomerStats,
+  getCustomerMetrics,
+} from "@/lib/db/queries";
 
-const maxWeeklyRevenue = Math.max(...REVENUE_DATA.weekly.map((d) => d.revenue));
-const maxBookings = Math.max(...REVENUE_DATA.topMarkets.map((m) => m.bookings));
+export default async function AnalyticsPage() {
+  const [weekly, topMarkets, groomerUtilization, customerMetrics] = await Promise.all([
+    getWeeklyRevenue(),
+    getMarketStats(),
+    getGroomerStats(),
+    getCustomerMetrics(),
+  ]);
 
-export default function AnalyticsPage() {
-  const { customerMetrics, weekly, topMarkets, groomerUtilization } = REVENUE_DATA;
+  const maxWeeklyRevenue = Math.max(...weekly.map((d) => d.revenue), 1);
+  const maxBookings = Math.max(...topMarkets.map((m) => m.bookings), 1);
 
   const metrics = [
     { label: "Total Customers", value: customerMetrics.totalCustomers.toString(), color: "#38bdf8" },
@@ -53,10 +63,13 @@ export default function AnalyticsPage() {
         <div className="flex items-end gap-3" style={{ height: 160 }}>
           {weekly.map((d) => {
             const heightPx = Math.round((d.revenue / maxWeeklyRevenue) * 120);
+            const revenueInDollars = d.revenue / 100; // Convert cents to dollars
             return (
               <div key={d.day} className="flex flex-col items-center flex-1 gap-1">
                 <span className="text-xs font-medium" style={{ color: "#94a3b8" }}>
-                  ${(d.revenue / 1000).toFixed(1)}k
+                  {revenueInDollars >= 1000
+                    ? `$${(revenueInDollars / 1000).toFixed(1)}k`
+                    : `$${Math.round(revenueInDollars)}`}
                 </span>
                 <div
                   style={{

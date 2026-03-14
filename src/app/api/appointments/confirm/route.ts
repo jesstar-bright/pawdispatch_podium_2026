@@ -183,7 +183,7 @@ export async function POST(request: Request) {
         .where(eq(pricing_estimates.id, estimateId));
 
       // 6. Generate confirmation number
-      const confirmationNumber = await generateConfirmationNumber();
+      const confirmationNumber = generateConfirmationNumber();
 
       // 7. Create appointment
       const endTime = new Date(parsedSlot.startTime);

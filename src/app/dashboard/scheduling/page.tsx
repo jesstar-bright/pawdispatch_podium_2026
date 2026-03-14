@@ -1,6 +1,11 @@
-import { APPOINTMENTS, Appointment, REVENUE_DATA } from "@/lib/dashboard-data";
+import {
+  getAllAppointments,
+  getTodayAppointments,
+  getGroomerStats,
+  type AppointmentWithDetails,
+} from "@/lib/db/queries";
 
-const STATUS_COLORS: Record<Appointment["status"], string> = {
+const STATUS_COLORS: Record<AppointmentWithDetails["status"], string> = {
   scheduled: "text-slate-400 bg-slate-400/10 border-slate-400/20",
   in_transit: "text-amber-400 bg-amber-500/10 border-amber-500/20",
   grooming: "text-sky-400 bg-sky-400/10 border-sky-400/20",
@@ -8,7 +13,7 @@ const STATUS_COLORS: Record<Appointment["status"], string> = {
   cancelled: "text-red-400 bg-red-500/10 border-red-500/20",
 };
 
-const STATUS_LABELS: Record<Appointment["status"], string> = {
+const STATUS_LABELS: Record<AppointmentWithDetails["status"], string> = {
   scheduled: "Scheduled",
   in_transit: "In Transit",
   grooming: "Grooming",
@@ -16,18 +21,15 @@ const STATUS_LABELS: Record<Appointment["status"], string> = {
   cancelled: "Cancelled",
 };
 
-const GROOMER_STATUS: Record<string, string> = {
-  "Alex Rivera": "Currently grooming Cooper",
-  "Jordan Lee": "Completed — en route to next",
-  "Casey Martinez": "In transit to Draper",
-};
-
 function formatCents(cents: number) {
   return `$${(cents / 100).toFixed(2).replace(/\.00$/, "")}`;
 }
 
-export default function SchedulingPage() {
-  const todayAppts = APPOINTMENTS.filter((a) => a.date === "Today");
+export default async function SchedulingPage() {
+  const allAppointments = await getAllAppointments();
+  const todayAppts = await getTodayAppointments();
+  const groomerStats = await getGroomerStats();
+
   const completed = todayAppts.filter((a) => a.status === "completed");
   const inProgress = todayAppts.filter(
     (a) => a.status === "grooming" || a.status === "in_transit"
@@ -35,9 +37,9 @@ export default function SchedulingPage() {
   const revenueToday = completed.reduce((sum, a) => sum + a.price, 0);
 
   const stats = [
-    { label: "Total Today", value: todayAppts.length, color: "#f1f5f9" },
-    { label: "Completed", value: completed.length, color: "#34d399" },
-    { label: "In Progress", value: inProgress.length, color: "#38bdf8" },
+    { label: "Total Today", value: todayAppts.length.toString(), color: "#f1f5f9" },
+    { label: "Completed", value: completed.length.toString(), color: "#34d399" },
+    { label: "In Progress", value: inProgress.length.toString(), color: "#38bdf8" },
     { label: "Revenue Today", value: formatCents(revenueToday), color: "#818cf8" },
   ];
 
@@ -72,8 +74,19 @@ export default function SchedulingPage() {
 
       {/* Groomer Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        {REVENUE_DATA.groomerUtilization.map((g) => {
+        {groomerStats.map((g) => {
           const groomerAppts = todayAppts.filter((a) => a.groomer === g.name);
+          const currentAppt = groomerAppts.find(
+            (a) => a.status === "grooming" || a.status === "in_transit"
+          );
+          const statusText = currentAppt
+            ? currentAppt.status === "grooming"
+              ? `Currently grooming ${currentAppt.petName}`
+              : `In transit to ${currentAppt.location}`
+            : groomerAppts.some((a) => a.status === "completed")
+            ? "Completed — en route to next"
+            : "On schedule";
+
           return (
             <div key={g.name} className="glass-card p-5">
               <div className="flex items-center justify-between mb-3">
@@ -92,7 +105,7 @@ export default function SchedulingPage() {
                 </span>
               </div>
               <p className="text-xs mb-4" style={{ color: "#94a3b8" }}>
-                {GROOMER_STATUS[g.name] ?? "On schedule"}
+                {statusText}
               </p>
               <div>
                 <div className="flex justify-between text-xs mb-1.5">
@@ -145,12 +158,12 @@ export default function SchedulingPage() {
               </tr>
             </thead>
             <tbody>
-              {APPOINTMENTS.map((appt, i) => (
+              {allAppointments.map((appt, i) => (
                 <tr
                   key={appt.id}
                   style={{
                     borderBottom:
-                      i < APPOINTMENTS.length - 1
+                      i < allAppointments.length - 1
                         ? "1px solid rgba(255,255,255,0.04)"
                         : "none",
                   }}
@@ -166,7 +179,9 @@ export default function SchedulingPage() {
                   </td>
                   <td className="px-4 py-3" style={{ color: "#94a3b8" }}>
                     {appt.petName}{" "}
-                    <span style={{ color: "#64748b" }}>({appt.breed})</span>
+                    {appt.breed && (
+                      <span style={{ color: "#64748b" }}>({appt.breed})</span>
+                    )}
                   </td>
                   <td className="px-4 py-3" style={{ color: "#94a3b8" }}>
                     {appt.groomer}

@@ -1,55 +1,63 @@
 # Pricing Agent
 
-Python pricing agent: dog photo + metadata → grooming estimate (Claude Vision + rules). All code for this agent lives in this folder.
-
-**1. Start the pricing agent (Terminal 1, from repo root):**
-```bash
-PYTHONPATH=src uvicorn agents.pricing.server:app --port 8000
-```
-
-**2. Start Next.js (Terminal 2, from repo root):**
-```bash
-npm run dev
-```
-
-Then open http://localhost:3000/upload to test.
+Python pricing agent: dog photo + metadata → grooming estimate (Claude Vision + rules). **No Node.js, no browser, no extra installs** — just Python and curl.
 
 ---
 
-## Setup
-
-From the **repo root**:
+## 1. Install Python dependencies (repo root)
 
 ```bash
 pip install -r src/agents/pricing/requirements.txt
 ```
 
-Or from this folder:
+---
+
+## 2. API key
+
+The API key lives in **`secrets/.env`** (e.g. `ANTHROPIC_API_KEY=...`). You don’t need to copy it anywhere else.
+
+---
+
+## 3. Start the agent (from repo root)
+
+Load the key and start the server:
 
 ```bash
-cd src/agents/pricing
-pip install -r requirements.txt
+set -a && source secrets/.env && set +a
+PYTHONPATH=src uvicorn agents.pricing.server:app --port 8000
 ```
 
-Set your API key:
+Leave this running.
+
+---
+
+## 4. Test with curl (no Node)
+
+Put your dog photo in the **`data/`** folder (e.g. `data/dog.jpg`). From repo root:
 
 ```bash
-export ANTHROPIC_API_KEY=your_key_here
+curl -X POST http://localhost:8000/estimate \
+  -F "image=@data/dog.jpg" \
+  -F "petName=Buddy"
 ```
 
-## Run
+You’ll get a JSON estimate (size category, base price, total, explanation).
 
-From the **repo root** (so the `agents.pricing` package resolves):
+---
 
-```bash
-export PYTHONPATH=src
-uvicorn agents.pricing.server:app --reload --port 8000
-```
+## API (reference)
 
 - **POST /estimate** — multipart: `image` (file), `petName` (required), `breed?`, `weight?`. Returns estimate.
 - **POST /estimate/json** — JSON: `petName`, `breed?`, `weight?`, `image?` (base64).
 - **GET /health** — health check.
 
-## Integration
+---
 
-Set `PRICING_AGENT_PYTHON_URL=http://localhost:8000` (e.g. in `.env.local`). The Next.js app proxies `POST /api/pricing/estimate` to this service.
+## Optional: web UI (Node.js)
+
+If you have Node.js and want the upload page at http://localhost:3000/upload:
+
+1. In repo root `.env.local`: `PRICING_AGENT_PYTHON_URL=http://localhost:8000`, `NEXT_PUBLIC_MOCK_API=false`.
+2. Run `npm run dev`, then open the upload page.
+
+The agent works fully without this; curl is enough.

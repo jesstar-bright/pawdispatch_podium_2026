@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import SlotPicker from "@/components/SlotPicker";
 import { proposeAppointments, confirmAppointment } from "@/lib/api";
@@ -37,6 +37,11 @@ export default function BookingPage() {
   const [petName, setPetName] = useState("");
   const [notes, setNotes] = useState("");
   const [preferredDate, setPreferredDate] = useState("");
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem(`petName-${estimateId}`);
+    if (saved) setPetName(saved);
+  }, [estimateId]);
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -96,9 +101,11 @@ export default function BookingPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="text-3xl font-bold text-foreground">Book Your Appointment</h1>
+      <h1 className="text-3xl font-bold text-foreground">
+        {petName ? `Let\u2019s get ${petName} looking great!` : "Book Your Appointment"}
+      </h1>
       <p className="mt-2 text-muted-foreground">
-        Fill in your details and pick a time that works for you.
+        {petName ? `Fill in your details and pick the perfect time for ${petName}\u2019s grooming session.` : "Fill in your details and pick a time that works for you."}
       </p>
 
       <div className="mt-8 space-y-8">

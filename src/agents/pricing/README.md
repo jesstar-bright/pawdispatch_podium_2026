@@ -2,6 +2,20 @@
 
 Python pricing agent: dog photo + metadata → grooming estimate (Claude Vision + rules). All code for this agent lives in this folder.
 
+**1. Start the pricing agent (Terminal 1, from repo root):**
+```bash
+PYTHONPATH=src uvicorn agents.pricing.server:app --port 8000
+```
+
+**2. Start Next.js (Terminal 2, from repo root):**
+```bash
+npm run dev
+```
+
+Then open http://localhost:3000/upload to test.
+
+---
+
 ## Setup
 
 From the **repo root**:

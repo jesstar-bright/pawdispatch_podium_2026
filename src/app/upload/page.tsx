@@ -41,19 +41,19 @@ export default function UploadPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="text-3xl font-bold text-zinc-900">Get a Price Estimate</h1>
-      <p className="mt-2 text-zinc-600">
+      <h1 className="text-3xl font-bold" style={{ color: "#f1f5f9" }}>Get a Price Estimate</h1>
+      <p className="mt-2" style={{ color: "#94a3b8" }}>
         Upload a photo of your dog and we&apos;ll use AI to give you an instant price estimate.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-8">
         <div>
-          <h2 className="mb-3 text-lg font-semibold text-zinc-800">Photo</h2>
+          <h2 className="mb-3 text-lg font-semibold" style={{ color: "#e2e8f0" }}>Photo</h2>
           <PhotoUpload onFileSelect={setFile} />
         </div>
 
         <div>
-          <h2 className="mb-3 text-lg font-semibold text-zinc-800">Pet Details</h2>
+          <h2 className="mb-3 text-lg font-semibold" style={{ color: "#e2e8f0" }}>Pet Details</h2>
           <PetDetailsForm
             petName={petName}
             breed={breed}
@@ -65,31 +65,44 @@ export default function UploadPage() {
         </div>
 
         <div>
-          <h2 className="mb-3 text-lg font-semibold text-zinc-800">Service</h2>
+          <h2 className="mb-3 text-lg font-semibold" style={{ color: "#e2e8f0" }}>Service</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-lg border-2 border-paw-blue bg-blue-50 p-3 text-center text-sm font-medium text-paw-blue">
+            <div
+              className="rounded-lg p-3 text-center text-sm font-medium"
+              style={{ border: "2px solid #2563eb", background: "rgba(37,99,235,0.15)", color: "#38bdf8" }}
+            >
               Grooming
             </div>
-            <div className="rounded-lg border border-zinc-200 p-3 text-center text-sm text-zinc-400">
+            <div
+              className="rounded-lg p-3 text-center text-sm"
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b" }}
+            >
               Walking <span className="block text-xs">Coming Soon</span>
             </div>
-            <div className="rounded-lg border border-zinc-200 p-3 text-center text-sm text-zinc-400">
+            <div
+              className="rounded-lg p-3 text-center text-sm"
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b" }}
+            >
               Boarding <span className="block text-xs">Coming Soon</span>
             </div>
-            <div className="rounded-lg border border-zinc-200 p-3 text-center text-sm text-zinc-400">
+            <div
+              className="rounded-lg p-3 text-center text-sm"
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#64748b" }}
+            >
               Daycare <span className="block text-xs">Coming Soon</span>
             </div>
           </div>
         </div>
 
         {error && (
-          <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>
+          <p className="rounded-lg p-3 text-sm" style={{ background: "rgba(220,38,38,0.15)", border: "1px solid rgba(220,38,38,0.3)", color: "#fca5a5" }}>{error}</p>
         )}
 
         <button
           type="submit"
           disabled={!file || !petName || loading}
-          className="w-full rounded-full bg-paw-blue py-3 text-lg font-semibold text-white transition-colors hover:bg-paw-blue-dark disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-full py-3 text-lg font-semibold text-white transition-all disabled:cursor-not-allowed disabled:opacity-50"
+          style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", boxShadow: "0 0 24px rgba(37,99,235,0.3)" }}
         >
           {loading ? "Analyzing with AI..." : "Get Price Estimate"}
         </button>

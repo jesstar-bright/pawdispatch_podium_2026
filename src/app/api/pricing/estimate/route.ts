@@ -72,13 +72,13 @@ export async function POST(request: Request) {
 
       if (!image || typeof image === "string") {
         return NextResponse.json(
-          { error: "image file is required", ...SPEC_ERROR },
+          { ...SPEC_ERROR, message: "Image file is required." },
           { status: 400 }
         );
       }
       if (!petName.trim()) {
         return NextResponse.json(
-          { error: "petName is required", ...SPEC_ERROR },
+          { ...SPEC_ERROR, message: "Pet name is required." },
           { status: 400 }
         );
       }
@@ -149,7 +149,7 @@ export async function POST(request: Request) {
     const petName = body.petName?.trim() ?? "";
     if (!petName) {
       return NextResponse.json(
-        { error: "petName is required for JSON body", ...SPEC_ERROR },
+        { ...SPEC_ERROR, message: "Pet name is required." },
         { status: 400 }
       );
     }

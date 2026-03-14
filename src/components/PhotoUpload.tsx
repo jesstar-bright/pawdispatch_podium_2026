@@ -33,13 +33,14 @@ export default function PhotoUpload({ onFileSelect }: PhotoUploadProps) {
         const file = e.dataTransfer.files[0];
         if (file) handleFile(file);
       }}
-      className={`relative flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors ${
+      className="relative flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors"
+      style={
         dragOver
-          ? "border-paw-blue bg-blue-50"
+          ? { borderColor: "#38bdf8", background: "rgba(56,189,248,0.06)" }
           : preview
-            ? "border-zinc-300"
-            : "border-zinc-300 hover:border-paw-blue"
-      }`}
+            ? { borderColor: "rgba(255,255,255,0.15)", background: "transparent" }
+            : { borderColor: "rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.02)" }
+      }
       onClick={() => document.getElementById("photo-input")?.click()}
     >
       {preview ? (
@@ -52,10 +53,10 @@ export default function PhotoUpload({ onFileSelect }: PhotoUploadProps) {
       ) : (
         <>
           <div className="text-5xl mb-4">📷</div>
-          <p className="text-lg font-medium text-zinc-700">
+          <p className="text-lg font-medium" style={{ color: "#94a3b8" }}>
             Drop a photo of your dog here
           </p>
-          <p className="mt-1 text-sm text-zinc-500">or click to browse</p>
+          <p className="mt-1 text-sm" style={{ color: "#64748b" }}>or click to browse</p>
         </>
       )}
       <input

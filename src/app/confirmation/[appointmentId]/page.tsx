@@ -24,7 +24,7 @@ export default function ConfirmationPage() {
   if (!confirmation) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-zinc-500">Loading confirmation...</p>
+        <p style={{ color: "#64748b" }}>Loading confirmation...</p>
       </div>
     );
   }
@@ -38,13 +38,15 @@ export default function ConfirmationPage() {
       <div className="mt-8 flex gap-4">
         <Link
           href="/coming-soon?agent=tracking"
-          className="flex-1 rounded-full border border-paw-blue py-3 text-center font-semibold text-paw-blue transition-colors hover:bg-blue-50"
+          className="flex-1 rounded-full py-3 text-center font-semibold transition-colors"
+          style={{ border: "1px solid rgba(255,255,255,0.15)", color: "#cbd5e1" }}
         >
           Track Appointment
         </Link>
         <Link
           href="/upload"
-          className="flex-1 rounded-full bg-paw-blue py-3 text-center font-semibold text-white transition-colors hover:bg-paw-blue-dark"
+          className="flex-1 rounded-full py-3 text-center font-semibold text-white transition-all"
+          style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", boxShadow: "0 0 24px rgba(37,99,235,0.3)" }}
         >
           Book Another
         </Link>

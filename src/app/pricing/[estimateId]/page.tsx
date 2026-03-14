@@ -24,15 +24,15 @@ export default function PricingPage() {
   if (!estimate) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-zinc-500">Loading estimate...</p>
+        <p style={{ color: "#64748b" }}>Loading estimate...</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="text-3xl font-bold text-zinc-900">Your Price Estimate</h1>
-      <p className="mt-2 text-zinc-600">
+      <h1 className="text-3xl font-bold" style={{ color: "#f1f5f9" }}>Your Price Estimate</h1>
+      <p className="mt-2" style={{ color: "#94a3b8" }}>
         Here&apos;s what grooming will cost based on our AI analysis of your dog&apos;s photo.
       </p>
 
@@ -43,13 +43,15 @@ export default function PricingPage() {
       <div className="mt-8 flex gap-4">
         <Link
           href={`/booking/${estimateId}`}
-          className="flex-1 rounded-full bg-paw-blue py-3 text-center text-lg font-semibold text-white transition-colors hover:bg-paw-blue-dark"
+          className="flex-1 rounded-full py-3 text-center text-lg font-semibold text-white transition-all"
+          style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", boxShadow: "0 0 24px rgba(37,99,235,0.3)" }}
         >
           Book Now
         </Link>
         <Link
           href="/upload"
-          className="flex-1 rounded-full border border-zinc-300 py-3 text-center text-lg font-semibold text-zinc-700 transition-colors hover:bg-zinc-50"
+          className="flex-1 rounded-full py-3 text-center text-lg font-semibold transition-colors"
+          style={{ border: "1px solid rgba(255,255,255,0.15)", color: "#cbd5e1" }}
         >
           Try Another Photo
         </Link>

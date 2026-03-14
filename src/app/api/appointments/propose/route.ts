@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { pricing_estimates, groomers, appointments } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { pricing_estimates, groomers, appointments, type Appointment, type Groomer } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { validateEmail, validateDate, validateUUID } from "@/lib/db/utils";
 import { generateTimeSlots, formatSlotId } from "@/lib/db/slots";
 
@@ -110,27 +110,18 @@ export async function POST(request: Request) {
     const allSlots = generateTimeSlots(requestedDate, availableGroomers);
 
     // Get existing appointments for this date to exclude booked slots
-    const startOfDay = new Date(requestedDate);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(requestedDate);
-    endOfDay.setHours(23, 59, 59, 999);
-
+    // Note: SQLite doesn't have native date comparison, so we'll filter in JS
     const existingAppointments = await db
       .select()
       .from(appointments)
-      .where(
-        and(
-          eq(appointments.status, "confirmed"),
-          // Note: SQLite doesn't have native date comparison, so we'll filter in JS
-        )
-      );
+      .where(eq(appointments.status, "confirmed"));
 
     // Filter out booked slots
     const availableSlots = allSlots.filter((slot) => {
       const slotStart = slot.startTime.getTime();
       const slotEnd = slot.endTime.getTime();
 
-      return !existingAppointments.some((apt) => {
+      return !existingAppointments.some((apt: Appointment) => {
         const aptStart = new Date(apt.start_time).getTime();
         const aptEnd = new Date(apt.end_time).getTime();
 
@@ -145,7 +136,7 @@ export async function POST(request: Request) {
 
     // Format response
     const slots = availableSlots.map((slot) => {
-      const groomer = availableGroomers.find((g) => g.id === slot.groomerId);
+      const groomer = availableGroomers.find((g: Groomer) => g.id === slot.groomerId);
       return {
         slotId: formatSlotId(slot.groomerId, slot.startTime),
         startTime: slot.startTime.toISOString(),

@@ -24,33 +24,33 @@ export default function ConfirmationDetails({ confirmation }: ConfirmationDetail
   });
 
   return (
-    <div className="rounded-xl border border-zinc-200 p-6">
+    <div className="rounded-2xl p-6" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
       <div className="text-center">
         <div className="text-5xl mb-4">✅</div>
-        <h2 className="text-2xl font-bold text-zinc-900">Booking Confirmed!</h2>
-        <p className="mt-2 text-lg font-mono font-bold text-paw-blue">
+        <h2 className="text-2xl font-bold" style={{ color: "#f1f5f9" }}>Booking Confirmed!</h2>
+        <p className="mt-2 text-lg font-mono font-bold" style={{ color: "#38bdf8" }}>
           {confirmation.confirmationNumber}
         </p>
       </div>
 
-      <div className="mt-6 space-y-3 border-t border-zinc-200 pt-6">
+      <div className="mt-6 space-y-3 pt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="flex justify-between text-sm">
-          <span className="text-zinc-500">Date</span>
-          <span className="font-medium text-zinc-900">{date}</span>
+          <span style={{ color: "#64748b" }}>Date</span>
+          <span className="font-medium" style={{ color: "#f1f5f9" }}>{date}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-zinc-500">Time</span>
-          <span className="font-medium text-zinc-900">
+          <span style={{ color: "#64748b" }}>Time</span>
+          <span className="font-medium" style={{ color: "#f1f5f9" }}>
             {startTime} – {endTime}
           </span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-zinc-500">Groomer</span>
-          <span className="font-medium text-zinc-900">{confirmation.groomer}</span>
+          <span style={{ color: "#64748b" }}>Groomer</span>
+          <span className="font-medium" style={{ color: "#f1f5f9" }}>{confirmation.groomer}</span>
         </div>
-        <div className="flex justify-between text-sm border-t border-zinc-200 pt-3">
-          <span className="text-zinc-500">Total</span>
-          <span className="text-lg font-bold text-zinc-900">
+        <div className="flex justify-between text-sm pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <span style={{ color: "#64748b" }}>Total</span>
+          <span className="text-lg font-bold" style={{ color: "#f1f5f9" }}>
             {formatPrice(confirmation.totalPrice)}
           </span>
         </div>

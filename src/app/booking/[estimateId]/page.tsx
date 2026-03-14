@@ -6,6 +6,12 @@ import SlotPicker from "@/components/SlotPicker";
 import { proposeAppointments, confirmAppointment } from "@/lib/api";
 import type { TimeSlot } from "@/lib/api";
 
+const inputStyle = {
+  background: "rgba(255,255,255,0.06)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  color: "#f1f5f9",
+};
+
 export default function BookingPage() {
   const params = useParams();
   const router = useRouter();
@@ -74,18 +80,18 @@ export default function BookingPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="text-3xl font-bold text-zinc-900">Book Your Appointment</h1>
-      <p className="mt-2 text-zinc-600">
+      <h1 className="text-3xl font-bold" style={{ color: "#f1f5f9" }}>Book Your Appointment</h1>
+      <p className="mt-2" style={{ color: "#94a3b8" }}>
         Fill in your details and pick a time that works for you.
       </p>
 
       <div className="mt-8 space-y-6">
         {/* Customer Info */}
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-zinc-800">Your Information</h2>
+          <h2 className="text-lg font-semibold" style={{ color: "#e2e8f0" }}>Your Information</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-zinc-700">
+              <label htmlFor="name" className="block text-sm font-medium" style={{ color: "#94a3b8" }}>
                 Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -94,11 +100,12 @@ export default function BookingPage() {
                 required
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-paw-blue focus:outline-none focus:ring-1 focus:ring-paw-blue"
+                className="mt-1 w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
+                style={inputStyle}
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-zinc-700">
+              <label htmlFor="email" className="block text-sm font-medium" style={{ color: "#94a3b8" }}>
                 Email <span className="text-red-500">*</span>
               </label>
               <input
@@ -107,11 +114,12 @@ export default function BookingPage() {
                 required
                 value={customerEmail}
                 onChange={(e) => setCustomerEmail(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-paw-blue focus:outline-none focus:ring-1 focus:ring-paw-blue"
+                className="mt-1 w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
+                style={inputStyle}
               />
             </div>
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-zinc-700">
+              <label htmlFor="phone" className="block text-sm font-medium" style={{ color: "#94a3b8" }}>
                 Phone <span className="text-red-500">*</span>
               </label>
               <input
@@ -120,11 +128,12 @@ export default function BookingPage() {
                 required
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-paw-blue focus:outline-none focus:ring-1 focus:ring-paw-blue"
+                className="mt-1 w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
+                style={inputStyle}
               />
             </div>
             <div>
-              <label htmlFor="petNameBooking" className="block text-sm font-medium text-zinc-700">
+              <label htmlFor="petNameBooking" className="block text-sm font-medium" style={{ color: "#94a3b8" }}>
                 Pet Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -133,12 +142,13 @@ export default function BookingPage() {
                 required
                 value={petName}
                 onChange={(e) => setPetName(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-paw-blue focus:outline-none focus:ring-1 focus:ring-paw-blue"
+                className="mt-1 w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
+                style={inputStyle}
               />
             </div>
           </div>
           <div>
-            <label htmlFor="address" className="block text-sm font-medium text-zinc-700">
+            <label htmlFor="address" className="block text-sm font-medium" style={{ color: "#94a3b8" }}>
               Address <span className="text-red-500">*</span>
             </label>
             <input
@@ -147,20 +157,22 @@ export default function BookingPage() {
               required
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-paw-blue focus:outline-none focus:ring-1 focus:ring-paw-blue"
+              className="mt-1 w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
+              style={inputStyle}
               placeholder="123 Main St, Salt Lake City, UT"
             />
           </div>
           <div>
-            <label htmlFor="notes" className="block text-sm font-medium text-zinc-700">
-              Special Instructions <span className="text-zinc-400">(optional)</span>
+            <label htmlFor="notes" className="block text-sm font-medium" style={{ color: "#94a3b8" }}>
+              Special Instructions <span style={{ color: "#64748b" }}>(optional)</span>
             </label>
             <textarea
               id="notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-paw-blue focus:outline-none focus:ring-1 focus:ring-paw-blue"
+              className="mt-1 w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
+              style={inputStyle}
               placeholder="e.g., Dog is anxious around strangers, gate code is 1234"
             />
           </div>
@@ -168,19 +180,21 @@ export default function BookingPage() {
 
         {/* Date + Slot Picker */}
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-zinc-800">Pick a Date</h2>
+          <h2 className="text-lg font-semibold" style={{ color: "#e2e8f0" }}>Pick a Date</h2>
           <div className="flex gap-3">
             <input
               type="date"
               value={preferredDate}
               onChange={(e) => setPreferredDate(e.target.value)}
               min={new Date().toISOString().split("T")[0]}
-              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-paw-blue focus:outline-none focus:ring-1 focus:ring-paw-blue"
+              className="rounded-lg px-3 py-2 text-sm focus:outline-none"
+              style={inputStyle}
             />
             <button
               onClick={handleFindSlots}
               disabled={!customerName || !customerEmail || !customerPhone || !address || !preferredDate || loadingSlots}
-              className="rounded-lg bg-paw-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-paw-blue-dark disabled:opacity-50"
+              className="rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all disabled:opacity-50"
+              style={{ background: "linear-gradient(135deg, #2563eb, #7c3aed)", boxShadow: "0 0 16px rgba(37,99,235,0.25)" }}
             >
               {loadingSlots ? "Finding slots..." : "Find Available Slots"}
             </button>
@@ -190,7 +204,7 @@ export default function BookingPage() {
         {/* Slots */}
         {slots.length > 0 && (
           <section className="space-y-4">
-            <h2 className="text-lg font-semibold text-zinc-800">Available Slots</h2>
+            <h2 className="text-lg font-semibold" style={{ color: "#e2e8f0" }}>Available Slots</h2>
             <SlotPicker
               slots={slots}
               selectedSlotId={selectedSlotId}
@@ -200,7 +214,7 @@ export default function BookingPage() {
         )}
 
         {error && (
-          <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</p>
+          <p className="rounded-lg p-3 text-sm" style={{ background: "rgba(220,38,38,0.15)", border: "1px solid rgba(220,38,38,0.3)", color: "#fca5a5" }}>{error}</p>
         )}
 
         {/* Confirm */}
@@ -208,7 +222,8 @@ export default function BookingPage() {
           <button
             onClick={handleConfirm}
             disabled={confirming || !petName}
-            className="w-full rounded-full bg-paw-green py-3 text-lg font-semibold text-white transition-colors hover:opacity-90 disabled:opacity-50"
+            className="w-full rounded-full py-3 text-lg font-semibold text-white transition-colors hover:opacity-90 disabled:opacity-50"
+            style={{ background: "#16a34a" }}
           >
             {confirming ? "Confirming..." : "Confirm Booking"}
           </button>

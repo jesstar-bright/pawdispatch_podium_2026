@@ -36,22 +36,30 @@ export default function SlotPicker({ slots, selectedSlotId, onSelect }: SlotPick
     <div className="space-y-6">
       {Object.entries(grouped).map(([date, dateSlots]) => (
         <div key={date}>
-          <h3 className="mb-3 text-sm font-semibold text-zinc-500 uppercase">{date}</h3>
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider" style={{ color: "#94a3b8" }}>{date}</h3>
           <div className="grid gap-3 sm:grid-cols-2">
             {dateSlots.map((slot) => (
               <button
                 key={slot.slotId}
                 onClick={() => onSelect(slot.slotId)}
-                className={`rounded-lg border-2 p-4 text-left transition-colors ${
+                className="rounded-xl p-4 text-left transition-all"
+                style={
                   selectedSlotId === slot.slotId
-                    ? "border-paw-blue bg-blue-50"
-                    : "border-zinc-200 hover:border-paw-blue"
-                }`}
+                    ? {
+                        background: "rgba(37,99,235,0.15)",
+                        border: "2px solid #38bdf8",
+                        boxShadow: "0 0 12px rgba(56,189,248,0.2)",
+                      }
+                    : {
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }
+                }
               >
-                <p className="font-semibold text-zinc-900">
+                <p className="font-semibold" style={{ color: "#f1f5f9" }}>
                   {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
                 </p>
-                <p className="mt-1 text-sm text-zinc-500">with {slot.groomer}</p>
+                <p className="mt-1 text-sm" style={{ color: "#64748b" }}>with {slot.groomer}</p>
               </button>
             ))}
           </div>

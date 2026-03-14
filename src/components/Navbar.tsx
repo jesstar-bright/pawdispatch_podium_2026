@@ -23,6 +23,13 @@ export default function Navbar() {
           <Link href="/coming-soon?agent=retention" className="hover:text-paw-blue">
             Retention
           </Link>
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-colors"
+            style={{ background: "linear-gradient(135deg, #38bdf8, #818cf8)", color: "#0f172a" }}
+          >
+            HQ
+          </Link>
         </div>
       </div>
     </nav>

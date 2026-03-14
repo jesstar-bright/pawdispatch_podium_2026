@@ -198,6 +198,7 @@ export default function BookingPage() {
               value={preferredDate}
               onChange={(e) => setPreferredDate(e.target.value)}
               min={new Date().toISOString().split("T")[0]}
+              max={new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]}
               className="flex-1 rounded-lg px-4 py-2.5 text-sm glass-input"
             />
             <button

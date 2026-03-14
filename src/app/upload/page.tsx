@@ -29,6 +29,7 @@ export default function UploadPage() {
       if (weight) formData.append("weight", weight);
       const estimate = await submitPricingEstimate(formData);
       sessionStorage.setItem(`estimate-${estimate.estimateId}`, JSON.stringify(estimate));
+      sessionStorage.setItem(`petName-${estimate.estimateId}`, petName);
       router.push(`/pricing/${estimate.estimateId}`);
     } catch {
       setError("Something went wrong. Please try again.");
